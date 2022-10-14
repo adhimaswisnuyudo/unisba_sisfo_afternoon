@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unisba_sisfo2/config/constanta.dart' as cs;
 import 'package:unisba_sisfo2/pages/login.dart';
+
+import 'home.dart';
 
 class SplashScreenPage extends StatefulWidget {
   const SplashScreenPage({Key? key}) : super(key: key);
@@ -14,8 +17,28 @@ class SplashScreenPage extends StatefulWidget {
 class _SplashScreenPageState extends State<SplashScreenPage> {
   @override
   void initState() {
-    redirectPage();
+    checkIsLogin();
     super.initState();
+  }
+
+  Future<void> checkIsLogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isLogin = prefs.getBool(cs.spIsLogin) ?? false;
+    if (isLogin == true) {
+      Future.delayed(const Duration(seconds: 2), () {
+        Navigator.pushReplacement(
+            context,
+            PageTransition(
+                child: const HomePage(), type: PageTransitionType.bottomToTop));
+      });
+    } else {
+      Future.delayed(const Duration(seconds: 2), () {
+        Navigator.pushReplacement(
+            context,
+            PageTransition(
+                child: LoginPage(), type: PageTransitionType.bottomToTop));
+      });
+    }
   }
 
   void redirectPage() {
