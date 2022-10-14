@@ -111,7 +111,7 @@ class ActiveUser {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['npm'] = npm;
     data['no_test'] = noTest;
     data['nik'] = nik;
