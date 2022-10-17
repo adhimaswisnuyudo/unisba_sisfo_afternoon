@@ -25,6 +25,7 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         title: cs.appName,
         theme: ThemeData(
+          fontFamily: 'Segoe',
           primarySwatch: Colors.blue,
         ),
         home: SplashScreenPage());

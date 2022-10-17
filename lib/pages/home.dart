@@ -3,11 +3,15 @@ import 'dart:convert';
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unisba_sisfo2/config/constanta.dart' as cs;
 import 'package:unisba_sisfo2/menus/main_menu.dart';
+import 'package:unisba_sisfo2/models/sisfo_menu.dart';
+import 'package:unisba_sisfo2/pages/webview.dart';
 
 import '../models/active_user.dart';
+import 'login.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -19,6 +23,39 @@ class _HomePageState extends State<HomePage> {
   bool isLoading = true;
   ActiveUser mhs = ActiveUser();
 
+  List<SisfoMenu> sisfoMenuList = [
+    SisfoMenu(
+        title: "SIBIMA",
+        icon: cs.iconSibima,
+        route: "https://sibima.unisba.ac.id"),
+    SisfoMenu(
+        title: "SIAKAD",
+        icon: cs.iconSiakad,
+        route: "https://siakad.unisba.ac.id"),
+    SisfoMenu(
+        title: "SIDPP",
+        icon: cs.iconSidpp,
+        route: "https://sidpp.unisba.ac.id"),
+    SisfoMenu(
+        title: "RPS & BAP",
+        icon: cs.iconSibima,
+        route: "https://rps.unisba.ac.id"),
+    SisfoMenu(
+        title: "Scholarship",
+        icon: cs.iconScholarship,
+        route: "https://unisba.ac.id"),
+    SisfoMenu(
+        title: "Pesantren",
+        icon: cs.iconPesantren,
+        route: "https://unisba.ac.id"),
+    SisfoMenu(
+        title: "TOEFL", icon: cs.iconToefl, route: "https://unisba.ac.id"),
+    SisfoMenu(
+        title: "Graduation",
+        icon: cs.iconGraduation,
+        route: "https://unisba.ac.id"),
+  ];
+
   Future<void> getActiveUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? activeUser = prefs.getString(cs.spActiveUser);
@@ -29,6 +66,58 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void openWebView(String title, String url) {
+    Navigator.push(
+        context,
+        PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child: WebViewPage(
+              title: title,
+              url: url,
+            )));
+  }
+
+  Future<void> logout() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Logout Sisfo'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Are you sure to logout?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Yes'),
+              onPressed: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.remove(cs.spActiveUser);
+                prefs.remove(cs.spIsLogin);
+                prefs.remove(cs.spTokenKey);
+                Navigator.pushReplacement(
+                    context,
+                    PageTransition(
+                        child: LoginPage(),
+                        type: PageTransitionType.bottomToTop));
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     getActiveUser();
@@ -37,6 +126,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    double deviceWidth = MediaQuery.of(context).size.width;
+    double deviceHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         leading: Image.asset(
@@ -58,13 +149,117 @@ class _HomePageState extends State<HomePage> {
               child: IconButton(
                   icon: const Icon(Icons.notifications), onPressed: () {}),
             ),
+          ),
+          IconButton(icon: Icon(Icons.logout), onPressed: () => logout()),
+        ],
+      ),
+      body: Stack(
+        children: <Widget>[
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                width: deviceWidth,
+                height: deviceHeight * 0.4,
+                decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.vertical(
+                        bottom: Radius.elliptical(deviceWidth, 100))),
+                child: Column(
+                  children: [
+                    SizedBox(height: 10),
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: NetworkImage(mhs.foto.toString()),
+                    ),
+                    SizedBox(height: 10),
+                    Text(mhs.npm.toString(),
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold)),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      mhs.nama.toString(),
+                      textAlign: TextAlign.center,
+                      // maxLines: 2,
+                      // overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: deviceHeight * 0.15),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(left: 10),
+                    child: Text(
+                      "Latest News",
+                      style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(right: 10),
+                    child: TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          "See More",
+                          style: TextStyle(color: Colors.blue),
+                        )),
+                  ),
+                ],
+              )
+            ],
+          ),
+          Positioned(
+            top: deviceHeight * 0.27,
+            left: 10,
+            right: 10,
+            child: Card(
+              elevation: 5,
+              child: Container(
+                padding: EdgeInsets.all(10),
+                child: Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: deviceWidth * 0.05,
+                  children: [
+                    for (var i in sisfoMenuList)
+                      rowMenu(i.title, i.icon, i.route)
+                  ],
+                ),
+              ),
+            ),
           )
         ],
       ),
-      body: ListView(
-        children: [],
-      ),
       bottomNavigationBar: MainMenu(),
+    );
+  }
+
+  Widget rowMenu(String title, String icon, String route) {
+    double deviceWidth = MediaQuery.of(context).size.width;
+    return Column(
+      children: [
+        GestureDetector(
+            onTap: () => {
+                  openWebView(title, route),
+                },
+            child: Image.asset(icon, width: deviceWidth * 0.17)),
+        SizedBox(height: 5),
+        Text(title, style: TextStyle(fontSize: deviceWidth * 0.04)),
+        SizedBox(height: 10),
+      ],
     );
   }
 }
