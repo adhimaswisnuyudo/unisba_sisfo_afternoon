@@ -256,7 +256,20 @@ class _HomePageState extends State<HomePage> {
                           size: 20,
                         )
                       : CarouselSlider(
-                          options: CarouselOptions(height: deviceHeight * 0.15),
+                          options: CarouselOptions(
+                            height: deviceHeight * 0.15,
+                            aspectRatio: 16 / 9,
+                            viewportFraction: 0.8,
+                            initialPage: 0,
+                            enableInfiniteScroll: true,
+                            reverse: false,
+                            autoPlay: true,
+                            autoPlayInterval: Duration(seconds: 3),
+                            autoPlayAnimationDuration:
+                                Duration(milliseconds: 800),
+                            autoPlayCurve: Curves.linear,
+                            scrollDirection: Axis.horizontal,
+                          ),
                           items: sliderList.map((i) {
                             return Builder(
                               builder: (BuildContext context) {
@@ -267,7 +280,7 @@ class _HomePageState extends State<HomePage> {
                                       child: Column(
                                         children: [
                                           Container(
-                                            height: deviceHeight * 0.1,
+                                            height: deviceHeight * 0.08,
                                             width: deviceWidth,
                                             margin: EdgeInsets.symmetric(
                                                 horizontal: 5.0),
@@ -300,7 +313,7 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ),
                                           Container(
-                                            padding: EdgeInsets.all(3),
+                                            padding: EdgeInsets.all(1),
                                             child: Text(
                                               i.title,
                                               textAlign: TextAlign.center,
