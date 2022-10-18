@@ -29,6 +29,10 @@ class _WebViewPageState extends State<WebViewPage> {
     });
   }
 
+  void refreshPage() {
+    webviewController.reload();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

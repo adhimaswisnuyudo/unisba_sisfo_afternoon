@@ -12,6 +12,7 @@ import 'package:unisba_sisfo2/config/constanta.dart' as cs;
 import 'package:unisba_sisfo2/menus/main_menu.dart';
 import 'package:unisba_sisfo2/models/sisfo_menu.dart';
 import 'package:unisba_sisfo2/models/slider.dart';
+import 'package:unisba_sisfo2/pages/seemore.dart';
 import 'package:unisba_sisfo2/pages/webview.dart';
 
 import '../models/active_user.dart';
@@ -31,7 +32,7 @@ class _HomePageState extends State<HomePage> {
     SisfoMenu(
         title: "SIBIMA",
         icon: cs.iconSibima,
-        route: "https://sibima.unisba.ac.id/sso/token"),
+        route: "https://sibima.unisba.ac.id"),
     SisfoMenu(
         title: "SIAKAD",
         icon: cs.iconSiakad,
@@ -47,17 +48,17 @@ class _HomePageState extends State<HomePage> {
     SisfoMenu(
         title: "Scholarship",
         icon: cs.iconScholarship,
-        route: "https://unisba.ac.id"),
+        route: "https://www.unisba.ac.id"),
     SisfoMenu(
         title: "Pesantren",
         icon: cs.iconPesantren,
-        route: "https://unisba.ac.id"),
+        route: "https://www.unisba.ac.id"),
     SisfoMenu(
-        title: "TOEFL", icon: cs.iconToefl, route: "https://unisba.ac.id"),
+        title: "TOEFL", icon: cs.iconToefl, route: "https://www.unisba.ac.id"),
     SisfoMenu(
         title: "Graduation",
         icon: cs.iconGraduation,
-        route: "https://unisba.ac.id"),
+        route: "https://wisuda.unisba.ac.id"),
   ];
 
   List<SisfoSlider> sliderList = [];
@@ -239,7 +240,13 @@ class _HomePageState extends State<HomePage> {
                   Container(
                     padding: EdgeInsets.only(right: 10),
                     child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              PageTransition(
+                                  child: SeeMorePage(),
+                                  type: PageTransitionType.bottomToTop));
+                        },
                         child: Text(
                           "See More",
                           style: TextStyle(color: Colors.blue),
