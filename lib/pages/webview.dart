@@ -14,7 +14,6 @@ class WebViewPage extends StatefulWidget {
 }
 
 class _WebViewPageState extends State<WebViewPage> {
-  bool isLoading = true;
   late WebViewController webviewController;
   int position = 1;
 
@@ -32,7 +31,6 @@ class _WebViewPageState extends State<WebViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(isLoading);
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
