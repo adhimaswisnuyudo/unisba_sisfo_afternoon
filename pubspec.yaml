@@ -21,6 +21,7 @@ dependencies:
   circular_bottom_navigation: ^2.2.0
   cached_network_image: ^3.0.0
   webview_flutter: ^3.0.4
+  carousel_slider: ^4.1.1
 
 dev_dependencies:
   flutter_test:

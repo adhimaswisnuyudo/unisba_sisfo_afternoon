@@ -1,13 +1,17 @@
 import 'dart:convert';
 
 import 'package:badges/badges.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unisba_sisfo2/config/constanta.dart' as cs;
 import 'package:unisba_sisfo2/menus/main_menu.dart';
 import 'package:unisba_sisfo2/models/sisfo_menu.dart';
+import 'package:unisba_sisfo2/models/slider.dart';
 import 'package:unisba_sisfo2/pages/webview.dart';
 
 import '../models/active_user.dart';
@@ -27,7 +31,7 @@ class _HomePageState extends State<HomePage> {
     SisfoMenu(
         title: "SIBIMA",
         icon: cs.iconSibima,
-        route: "https://sibima.unisba.ac.id"),
+        route: "https://sibima.unisba.ac.id/sso/token"),
     SisfoMenu(
         title: "SIAKAD",
         icon: cs.iconSiakad,
@@ -55,6 +59,28 @@ class _HomePageState extends State<HomePage> {
         icon: cs.iconGraduation,
         route: "https://unisba.ac.id"),
   ];
+
+  List<SisfoSlider> sliderList = [];
+
+  Future<void> getSliders() async {
+    Dio dio = Dio();
+    var response = await dio.get(cs.sliderUrl);
+    if (response.statusCode == 200) {
+      setState(() {
+        for (var i in response.data) {
+          sliderList.add(SisfoSlider(
+            id: i['id'].toString(),
+            title: i['title']['rendered'],
+            image: i['jetpack_featured_media_url'],
+            link: i['link'],
+          ));
+        }
+        isLoading = false;
+      });
+    } else {
+      Fluttertoast.showToast(msg: "Unable to load News");
+    }
+  }
 
   Future<void> getActiveUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -121,6 +147,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     getActiveUser();
+    getSliders();
     super.initState();
   }
 
@@ -219,7 +246,74 @@ class _HomePageState extends State<HomePage> {
                         )),
                   ),
                 ],
-              )
+              ),
+              Container(
+                  padding: EdgeInsets.only(left: 10, right: 10),
+                  height: deviceHeight * 0.15,
+                  child: isLoading
+                      ? SpinKitCubeGrid(
+                          color: Colors.white,
+                          size: 20,
+                        )
+                      : CarouselSlider(
+                          options: CarouselOptions(height: deviceHeight * 0.15),
+                          items: sliderList.map((i) {
+                            return Builder(
+                              builder: (BuildContext context) {
+                                return Card(
+                                  child: InkWell(
+                                      onTap: () =>
+                                          {openWebView(i.title, i.link)},
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            height: deviceHeight * 0.1,
+                                            width: deviceWidth,
+                                            margin: EdgeInsets.symmetric(
+                                                horizontal: 5.0),
+                                            decoration: BoxDecoration(
+                                                color: Colors.white),
+                                            child: Image.network(
+                                              i.image,
+                                              fit: BoxFit.cover,
+                                              loadingBuilder:
+                                                  (BuildContext context,
+                                                      Widget child,
+                                                      ImageChunkEvent?
+                                                          loadingProgress) {
+                                                if (loadingProgress == null)
+                                                  return child;
+                                                return Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    value: loadingProgress
+                                                                .expectedTotalBytes !=
+                                                            null
+                                                        ? loadingProgress
+                                                                .cumulativeBytesLoaded /
+                                                            loadingProgress
+                                                                .expectedTotalBytes!
+                                                        : null,
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.all(3),
+                                            child: Text(
+                                              i.title,
+                                              textAlign: TextAlign.center,
+                                              maxLines: 2,
+                                            ),
+                                          )
+                                        ],
+                                      )),
+                                );
+                              },
+                            );
+                          }).toList(),
+                        ))
             ],
           ),
           Positioned(
