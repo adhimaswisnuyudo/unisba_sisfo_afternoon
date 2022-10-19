@@ -23,3 +23,5 @@ const String sliderUrl =
 
 const String postMoreUrl =
     "https://www.unisba.ac.id/wp-json/wp/v2/posts?per_page=10&categories=486";
+
+const String updateProfileUrl = "https://sibima.unisba.ac.id/api/biodata";

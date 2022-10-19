@@ -1,6 +1,8 @@
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:unisba_sisfo2/pages/updateprofile.dart';
 
 class MainMenu extends StatefulWidget {
   const MainMenu({Key? key}) : super(key: key);
@@ -29,6 +31,16 @@ class _MainMenuState extends State<MainMenu> {
     super.initState();
   }
 
+  void redirectPage(int selectedPost) {
+    if (selectedPos == 4) {
+      Navigator.push(
+          context,
+          PageTransition(
+              child: UpdateProfilePage(),
+              type: PageTransitionType.rightToLeft));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return CircularBottomNavigation(
@@ -38,6 +50,7 @@ class _MainMenuState extends State<MainMenu> {
       selectedCallback: (int? selectedPos) {
         setState(() {
           this.selectedPos = selectedPos!;
+          redirectPage(selectedPos);
         });
       },
     );
