@@ -24,6 +24,9 @@ dependencies:
   carousel_slider: ^4.1.1
   # pull_to_refresh: ^2.0.0
   pull_to_refresh_flutter3: ^2.0.1
+  flutter_launcher_icons: ^0.10.0
+  flutter_app_name: ^0.1.1
+  rename: ^2.0.1
 
 dev_dependencies:
   flutter_test:
@@ -41,4 +44,13 @@ flutter:
         - asset: assets/fonts/segoe.ttf
         - asset: assets/fonts/segoe_italic.ttf
           style: italic
-  
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/icons/icon_launcher.png"
+  min_sdk_android: 21
+
+flutter_app_name:
+  name: "Unisba Sisfo"

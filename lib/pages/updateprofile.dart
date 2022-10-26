@@ -71,6 +71,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
               response.data['user'] as Map<String, dynamic>;
           ActiveUser au = ActiveUser.fromJson(map);
           await prefs.setString(cs.spActiveUser, jsonEncode(au));
+          getActiveUser();
+          Navigator.pop(context);
         } else {
           var message = response.data['message'];
           Fluttertoast.showToast(msg: message);
@@ -231,7 +233,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                       color: Colors.blue,
                       textColor: Colors.white,
                       child: Text(
-                        "Login",
+                        "Update Profile",
                         style: TextStyle(fontSize: 18),
                       ),
                       onPressed: () => {updateProfile()},
